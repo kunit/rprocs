@@ -77,11 +77,14 @@ func (p *Proc) SetUser() error {
 
 // SetCpu Calculation CPU Rate
 func (p *Proc) SetCpu(uptime *system.Uptime, clkTck uint64) {
-	totalTime := p.Stat.Utime + p.Stat.Stime + uint64(p.Stat.Cutime) + uint64(p.Stat.Cstime)
+	totalTime := p.Stat.Utime + p.Stat.Stime
 	var cpu float64
 	t := p.CookEtime(uptime, clkTck)
 	if t != 0 {
 		cpu = float64(totalTime*1000/clkTck/t) / 10
+	}
+	if cpu > 999 {
+		cpu = 999
 	}
 	p.Cpu = strconv.FormatFloat(cpu, 'f', 1, 64)
 }
